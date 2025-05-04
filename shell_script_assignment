@@ -1,0 +1,134 @@
+Step 1: Create a file called sig.conf
+	
+	touch sig.sh
+
+Step 2: Edit the file
+
+	vim sig.sh
+
+Step 3: Input the shell script for the given problem statement
+
+	validate_input() {
+  	 	local input=$1
+   		shift
+		local valid_options=("$@")
+
+    		for option in "${valid_options[@]}"; do
+       	 		if [[ "$input" == "$option" ]]; then
+            			return 0
+        		fi
+    		done
+    		return 1
+	}
+
+# This is the function for validation of inputs
+
+
+Step 4: Take the input for component name
+
+	while true; do
+	    read -rp "Enter Component Name [INGESTOR/JOINER/WRANGLER/VALIDATOR]: " component
+	    if validate_input "$component" "INGESTOR" "JOINER" "WRANGLER" "VALIDATOR"; then
+	        break
+  	  else
+       	        echo "Invalid component. Try again."
+   	    fi
+	done
+
+# Here it will validate only the valid input like [INGESTOR/JOINER/WRANGLER/VALIDATOR].
+#if the user enters other than this, it displays "Invalid input. Try again".
+#The loop will continue until user inputs valid option.
+
+Step 5: Take the input for Scale.
+
+	while true; do
+    	   read -rp "Enter Scale [MID/HIGH/LOW]: " scale
+    	   if validate_input "$scale" "MID" "HIGH" "LOW"; then
+              break
+           else
+              echo "Invalid scale. Try again."
+           fi
+	done
+
+Step 6: Take the input for view
+
+	while true; do
+    	   read -rp "Enter View [Auction/Bid]: " view
+           if validate_input "$view" "Auction" "Bid"; then
+              break
+           else
+              echo "Invalid view. Try again."
+            fi
+	done
+
+Step 7: Take the input for count(0-9).
+
+	while true; do
+    	   read -rp "Enter Count [single digit 0-9]: " count
+        if [[ "$count" =~ ^[0-9]$ ]]; then
+           break
+        else
+           echo "Invalid count. Must be a single digit number."
+        fi
+        done
+
+Step 8: Determine view string name
+
+	if [[ "$view" == "Auction" ]]; then
+  	   view_str="vdopiasample"
+        else
+           view_str="vdopiasample-bid"
+        fi
+
+#  If the view is 'Auction' then make it as 'vdopiasample'
+#  If the view is 'Bid' then make it as 'vdopiasample-bid'
+ 
+Step 9: Develop a search pattern
+
+	search_pattern="${view}; ${scale}; ${component}; ETL; ${view_str}= "
+
+# search pattern indicates in which pattern the options should match. 
+
+Step 10: Check the pattern and update
+
+	if grep -q "^${search_pattern}" "$CONFIG_FILE"; then
+  	   sed -i "" "0,/^${search_pattern}.*/s//${search_pattern}${count}/" "$CONFIG_FILE"
+    	   echo "Configuration updated successfully."
+	else
+   	   echo "Matching line not found in $CONFIG_FILE."
+	fi
+
+# This will check the pattern in sig.conf file 
+# If the pattern matches then it will update the count in sig.conf using "sed -i"
+# If the pattern dont match then, it displays "Matching line not found".
+
+Step 11: Create a configuration file - sig.conf
+
+	touch sig.conf
+
+Step 12: input the sample record in configuration file
+
+	vim sig.conf
+
+	 vdopiasample; MID; INGESTOR; ETL; vdopia-etl=9
+
+Step 13: Give the exectable permission
+
+	chmod +x sig.sh
+
+Step 14: Test the shell script by running it
+
+	./sig.sh
+
+Step 15: Following would be the output
+
+	Enter Component Name [INGESTOR/JOINER/WRANGLER/VALIDATOR]: INGESTOR
+	Enter Scale [MID/HIGH/LOW]: MID
+	Enter View [Auction/Bid]: Auction
+	Enter Count [single digit 0-9]: 5
+	Configuration updated successfully.
+	
+
+	sigmoid@sigmoid-ThinkPad-T470:~$ cat sig.conf
+	vdopiasample; MID; INGESTOR; ETL; vdopia-etl=5
+
