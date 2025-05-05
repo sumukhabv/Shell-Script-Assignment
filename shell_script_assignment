@@ -85,9 +85,9 @@ Step 8: Determine view string name
  
 Step 9: Develop a search pattern
 
-	search_pattern="${view}; ${scale}; ${component}; ETL; ${view_str}= "
+	search_pattern="${view_str}; ${scale}; ${component}; ETL; vdopia-etl="
 
-# search pattern indicates in which pattern the options should match. 
+# search pattern indicates in which pattern the options should match.
 
 Step 10: Check the pattern and update
 
