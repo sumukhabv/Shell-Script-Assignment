@@ -1,4 +1,4 @@
-Step 1: Create a file called sig.conf
+Step 1: Create a file called sig.sh
 	
 	touch sig.sh
 
@@ -36,8 +36,8 @@ Step 4: Take the input for component name
 	done
 
 # Here it will validate only the valid input like [INGESTOR/JOINER/WRANGLER/VALIDATOR].
-#if the user enters other than this, it displays "Invalid input. Try again".
-#The loop will continue until user inputs valid option.
+# if the user enters other than this, it displays "Invalid input. Try again".
+# The loop will continue until user inputs valid option.
 
 Step 5: Take the input for Scale.
 
@@ -108,7 +108,7 @@ Step 11: Create a configuration file - sig.conf
 
 Step 12: input the sample record in configuration file
 
-	vim sig.conf
+	 vim sig.conf
 
 	 vdopiasample; MID; INGESTOR; ETL; vdopia-etl=9
 
