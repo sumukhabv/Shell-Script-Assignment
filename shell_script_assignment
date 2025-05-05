@@ -92,7 +92,7 @@ Step 9: Develop a search pattern
 Step 10: Check the pattern and update
 
 	if grep -q "^${search_pattern}" "$CONFIG_FILE"; then
-  	   sed -i "" "0,/^${search_pattern}.*/s//${search_pattern}${count}/" "$CONFIG_FILE"
+  	   sed -i "0,/^${search_pattern}.*/s//${search_pattern}${count}/" "$CONFIG_FILE"
     	   echo "Configuration updated successfully."
 	else
    	   echo "Matching line not found in $CONFIG_FILE."
@@ -104,7 +104,7 @@ Step 10: Check the pattern and update
 
 Step 11: Create a configuration file - sig.conf
 
-	touch sig.conf
+	 touch sig.conf
 
 Step 12: input the sample record in configuration file
 
@@ -114,11 +114,11 @@ Step 12: input the sample record in configuration file
 
 Step 13: Give the exectable permission
 
-	chmod +x sig.sh
+	 chmod +x sig.sh
 
 Step 14: Test the shell script by running it
 
-	./sig.sh
+	 ./sig.sh
 
 Step 15: Following would be the output
 
