@@ -83,52 +83,56 @@ Step 8: Determine view string name
 #  If the view is 'Auction' then make it as 'vdopiasample'
 #  If the view is 'Bid' then make it as 'vdopiasample-bid'
  
-Step 9: Develop a search pattern
+Step 9: Create a new line
 
-	search_pattern="${view_str}; ${scale}; ${component}; ETL; vdopia-etl="
+        new_line="$view_string ; $scale ; $component ; ETL ; vdopia-etl=$count"
 
-# search pattern indicates in which pattern the options should match.
+Step 10: Check if sig.conf exists
 
-Step 10: Check the pattern and update
+        if [ ! -f "sig.conf" ]; then
+            echo "Creating new sig.conf file"
+            echo "$new_line" > sig.conf
+            echo "Configuration added successfully!"
+            exit 0
+        fi
 
-	if grep -q "^${search_pattern}" "$CONFIG_FILE"; then
-  	   sed -i "0,/^${search_pattern}.*/s//${search_pattern}${count}/" "$CONFIG_FILE"
-    	   echo "Configuration updated successfully."
-	else
-   	   echo "Matching line not found in $CONFIG_FILE."
-	fi
+# It will check whether sig.conf file is there or not.
+# If the file is not there it will create the file.
 
-# This will check the pattern in sig.conf file 
-# If the pattern matches then it will update the count in sig.conf using "sed -i"
-# If the pattern dont match then, it displays "Matching line not found".
+Step 11: Check whether the component exists in the file or not.
 
-Step 11: Create a configuration file - sig.conf
+        if grep -q " $component " "sig.conf"; then
+            # Replace existing line
+            sed -i "s/.*; $component ;.*/$new_line/" sig.conf
+            echo "Updated configuration for $component in sig.conf"
+        else
+            # Add new line
+            echo "$new_line" >> sig.conf
+            echo "Added new configuration for $component to sig.conf"
+        fi
 
-	 touch sig.conf
+        echo "Configuration set to: $new_line"
 
-Step 12: input the sample record in configuration file
+# It will check the component existence.
+# If it exists it will change the other values, else it will create a new line.
 
-	 vim sig.conf
-
-	 vdopiasample; MID; INGESTOR; ETL; vdopia-etl=9
-
-Step 13: Give the exectable permission
+Step 12: Give the exectable permission
 
 	 chmod +x sig.sh
 
-Step 14: Test the shell script by running it
+Step 13: Test the shell script by running it
 
 	 ./sig.sh
 
-Step 15: Following would be the output
+Step 14: Following would be the output
 
-	Enter Component Name [INGESTOR/JOINER/WRANGLER/VALIDATOR]: INGESTOR
-	Enter Scale [MID/HIGH/LOW]: MID
-	Enter View [Auction/Bid]: Auction
-	Enter Count [single digit 0-9]: 5
-	Configuration updated successfully.
-	
+ 	Enter Component Name [INGESTOR/JOINER/WRANGLER/VALIDATOR]: INGESTOR
+        Enter Scale [MID/HIGH/LOW]: MID
+        Enter View [Auction/Bid]: Auction
+        Enter Count [single digit 0-9]: 5
+        Added new configuration for INGESTOR to sig.conf
 
-	sigmoid@sigmoid-ThinkPad-T470:~$ cat sig.conf
-	vdopiasample; MID; INGESTOR; ETL; vdopia-etl=5
+        sigmoid@sigmoid-ThinkPad-T470:~$ cat sig.conf
+        vdopiasample; MID; INGESTOR; ETL; vdopia-etl=5
+
 
