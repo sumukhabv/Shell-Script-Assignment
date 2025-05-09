@@ -63,14 +63,27 @@ else
     view_str="vdopiasample-bid"
 fi
 
-# Construct the search pattern
-search_pattern="${view_str}; ${scale}; ${component}; ETL; vdopia-etl="
+# Create the new line for the config file
+new_line="$view_str ; $scale ; $component ; ETL ; vdopia-etl=$count"
 
-# Update the line (only one match) using `sed`
-if grep -q "^${search_pattern}" "$CONFIG_FILE"; then
-    sed -i "0,/^${search_pattern}.*/s//${search_pattern}${count}/" "$CONFIG_FILE"
-    echo "Configuration updated successfully."
-else
-    echo "Matching line not found in $CONFIG_FILE."
+# Check if sig.conf exists
+if [ ! -f "sig.conf" ]; then
+    echo "Creating new sig.conf file"
+    echo "$new_line" > sig.conf
+    echo "Configuration added successfully!"
+    exit 0
 fi
+
+# Check if component exists in file
+if grep -q " $component " "sig.conf"; then
+    # Replace existing line
+    sed -i "s/.*; $component ;.*/$new_line/" sig.conf
+    echo "Updated configuration for $component in sig.conf"
+else
+    # Add new line
+    echo "$new_line" >> sig.conf
+    echo "Added new configuration for $component to sig.conf"
+fi
+
+echo "Configuration set to: $new_line"
 
